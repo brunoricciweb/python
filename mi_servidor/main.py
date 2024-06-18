@@ -2,6 +2,46 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+products = [
+    {
+        "id": 1,
+    "nombre": "Yerba sin palo",
+    "categoria": "alimentos",
+    "precio": 5670
+  },
+  {
+    "id": 2,
+    "nombre": "Yogurt",
+    "categoria": "lacteos",
+    "precio": 4200
+  },
+   {
+    "id": 3,
+    "nombre": "Queso Provolone",
+    "categoria": "lacteos",
+    "precio": 7433
+  },  
+    {
+    "id": 4,
+    "nombre": "Manzana roja",
+    "categoria": "frutas",
+    "precio": 1610
+  }
+]
+
+
+def filtrarPorCategoria(listaProductos, cat):
+    output = []
+    for p in listaProductos:
+        if p['categoria'] == cat: 
+            output.append(p)
+    return output
+
+def filtrarPorId(listaProductos, id):
+    for p in listaProductos:
+        if p['id'] == id: 
+            return p   # devuelve el producto y sale de la función
+
 
 @app.get("/")
 async def root():
@@ -25,3 +65,32 @@ async def root(num1:int, num2:int):
     else:
         return 'Los números son iguales.'    
     return f'El número mayor es {numeroMayor}'
+
+
+#######################################
+
+@app.post("/producto")  # POST -> crear producto
+async def root(product:dict):
+    print('Los datos del producto son:', product)
+    products.append( product )
+    return {'message': 'Se creó el producto'}
+
+@app.get("/productos/{category}")  # GET -> obtener productos
+async def root(category:str):
+
+    print(f'Se filtra por la categoría {category}')
+    return filtrarPorCategoria(products, category)
+
+@app.get("/productos")  # GET -> obtener productos
+async def root():
+    return products
+
+@app.get("/producto/{id}")  # obtiene el producto según su ID
+async def root(id:int):
+    
+    resultado = filtrarPorId(products, id)
+    if resultado == None: 
+        return f'No existe el producto con ID {id}'
+    else: 
+        return resultado 
+
