@@ -48,7 +48,7 @@ async def root():
     return {"message": "Hola! servidor de prueba de la clase de Esp. en desarrollo Web!"}
 
 @app.get("/search")
-async def root(busqueda:str):
+async def search(busqueda:str):
     return f"La búsqueda es: '{busqueda}'"
 
 @app.get("/saludar/{nombre}")
@@ -77,7 +77,6 @@ async def root(product:dict):
 
 @app.get("/productos/{category}")  # GET -> obtener productos
 async def root(category:str):
-
     print(f'Se filtra por la categoría {category}')
     return filtrarPorCategoria(products, category)
 
@@ -87,7 +86,6 @@ async def root():
 
 @app.get("/producto/{id}")  # obtiene el producto según su ID
 async def root(id:int):
-    
     resultado = filtrarPorId(products, id)
     if resultado == None: 
         return f'No existe el producto con ID {id}'
