@@ -1,32 +1,15 @@
 from fastapi import FastAPI
+# from pydantic import BaseModel
+from validations import Product
+
+
+
 
 app = FastAPI()
 
 products = [
-    {
-        "id": 1,
-    "nombre": "Yerba sin palo",
-    "categoria": "alimentos",
-    "precio": 5670
-  },
-  {
-    "id": 2,
-    "nombre": "Yogurt",
-    "categoria": "lacteos",
-    "precio": 4200
-  },
-   {
-    "id": 3,
-    "nombre": "Queso Provolone",
-    "categoria": "lacteos",
-    "precio": 7433
-  },  
-    {
-    "id": 4,
-    "nombre": "Manzana roja",
-    "categoria": "frutas",
-    "precio": 1610
-  }
+    Product(id=1,nombre='Yerba sin palo', categoria='alimentos', precio=1234.55),
+    Product(id=1,nombre='Queso cremoso', categoria='lacteos', precio=3566.00),
 ]
 
 
@@ -41,6 +24,12 @@ def filtrarPorId(listaProductos, id):
     for p in listaProductos:
         if p['id'] == id: 
             return p   # devuelve el producto y sale de la función
+
+def validarId(listaProductos, id):
+    for p in listaProductos:
+        if p.id == id: 
+            return False
+    return True
 
 
 @app.get("/")
@@ -70,10 +59,14 @@ async def root(num1:int, num2:int):
 #######################################
 
 @app.post("/producto")  # POST -> crear producto
-async def root(product:dict):
-    print('Los datos del producto son:', product)
-    products.append( product )
-    return {'message': 'Se creó el producto'}
+async def root(newProduct: Product):
+    print('Los datos del producto son:', newProduct)
+    if(validarId(products, newProduct.id)):
+        products.append( newProduct )
+        return {'message': 'Se creó el producto'}
+    else:
+        return {'message': f'No se pudo crear el producto. El id {newProduct.id} ya existe.'}
+
 
 @app.get("/productos/{category}")  # GET -> obtener productos
 async def root(category:str):
