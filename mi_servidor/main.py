@@ -9,7 +9,7 @@ app = FastAPI()
 
 products = [
     Product(id=1,nombre='Yerba sin palo', categoria='alimentos', precio=1234.55),
-    Product(id=1,nombre='Queso cremoso', categoria='lacteos', precio=3566.00),
+    Product(id=2,nombre='Queso cremoso', categoria='lacteos', precio=3566.00),
 ]
 
 
@@ -22,7 +22,7 @@ def filtrarPorCategoria(listaProductos, cat):
 
 def filtrarPorId(listaProductos, id):
     for p in listaProductos:
-        if p['id'] == id: 
+        if p.id == id: 
             return p   # devuelve el producto y sale de la función
 
 def validarId(listaProductos, id):
@@ -59,7 +59,7 @@ async def root(num1:int, num2:int):
 #######################################
 
 @app.post("/producto")  # POST -> crear producto
-async def root(newProduct: Product):
+async def root(newProduct: Product) -> dict:
     print('Los datos del producto son:', newProduct)
     if(validarId(products, newProduct.id)):
         products.append( newProduct )
@@ -74,11 +74,11 @@ async def root(category:str):
     return filtrarPorCategoria(products, category)
 
 @app.get("/productos")  # GET -> obtener productos
-async def root():
+async def root() -> list[Product]:
     return products
 
 @app.get("/producto/{id}")  # obtiene el producto según su ID
-async def root(id:int):
+async def root(id:int) -> Product:
     resultado = filtrarPorId(products, id)
     if resultado == None: 
         return f'No existe el producto con ID {id}'

@@ -5,3 +5,4 @@ class Product(BaseModel):
     nombre: str
     categoria: str  | None = None
     precio: float
+
