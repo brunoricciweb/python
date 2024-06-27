@@ -1,9 +1,10 @@
 from pydantic import BaseModel
 from enum import Enum
 
-class CodigoPais(str,Enum):
+class CodigoPais(Enum):
     AR = 'ARG'
     BR = 'BRA'
+    aa = 123
 
 
 class Pasajero(BaseModel):
