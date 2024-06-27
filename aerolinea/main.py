@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+from validations import Ticket
 
 app = FastAPI()
 
-@app.get("/")
-async def root():
-    return {"message": "Hola! servidor de prueba de la clase de Esp. en desarrollo Web!"}
+@app.post("/ticket")
+async def post_ticket(infoTicket:Ticket):
+    print(f'la información del ticket es: {infoTicket}')
+    return 'POST /ticket'
