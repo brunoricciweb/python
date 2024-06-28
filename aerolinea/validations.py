@@ -19,5 +19,6 @@ class Vuelo(BaseModel):
     fecha_partida: str
 
 class Ticket(BaseModel):
+    id: int | None = None
     pasajero: Pasajero
     vuelo: Vuelo
