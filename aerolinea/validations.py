@@ -1,6 +1,10 @@
 from pydantic import BaseModel
 from enum import Enum
 
+class Authentication(BaseModel):
+    username: str
+    password: str
+
 class CodigoPais(Enum):
     AR = 'ARG'
     BR = 'BRA'
