@@ -1,6 +1,25 @@
 from typing import Annotated
-from fastapi import FastAPI, Request, Response, Cookie
+from fastapi import FastAPI, Request, Response, Cookie, Depends
 from validations import Ticket, Pasajero, Vuelo, Authentication
+
+from typing import Optional
+
+from . import models
+from .database import SessionLocal
+
+# import db
+# engine = create_engine('postgresql+psycopg2://bruno:cozxfdUSeluaSObPUUGMcdXm2o3mOeZZ@dpg-cq3il5aju9rs739fj7qg-a.oregon-postgres.render.com/test_iyxa')
+
+# engine = create_engine('sqlite:///database.db')
+# session = Session(engine)
+# class Hero(SQLModel, table=True):
+#     id: Optional[int] = Field(default=None, primary_key=True)
+#     name: str
+#     secret_name: str
+#     age: Optional[int] = None
+
+# hero_1 = Hero(name="Deadpond", secret_name="Dive Wilson")
+# SQLModel.metadata.create_all(engine)
 
 app = FastAPI()
 
@@ -20,8 +39,13 @@ credenciales = {
 }
 
 def identificarUsuario(dataRequest:Cookie):
-    return dataRequest.cookies.get('loggedUser')
+    # return dataRequest.cookies.get('loggedUser')
+    return True
     
+
+def pepe(input):
+    print('pepe input-> ', input)
+    return True
 
 @app.post("/ticket")  # comprar vuelo
 async def post_ticket(infoTicket:Ticket, req:Request, res:Response):
@@ -30,7 +54,18 @@ async def post_ticket(infoTicket:Ticket, req:Request, res:Response):
     # invocar una función que verifique de qué usuario proviene la request
     usuarioAutenticado = identificarUsuario(req)
     if(usuarioAutenticado != None):
+        
+        # db.session.add(hero_1)
+        # db.session.commit()
+        
+        db_user = models.User(email='sdadas@ddd.com', hashed_password='sssssss')
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+
+
         # continuar con la compra
+        listaTickets.append(infoTicket)
         return 'POST /ticket'
     else:
         # indicar que no se está autenticado.
@@ -42,8 +77,23 @@ async def post_ticket(infoTicket:Ticket, req:Request, res:Response):
 @app.get("/ticket/{id}")
 async def get_ticket(id: int):
     print(f'Buscando ticket id={id}...')
+    statement = db.select(db.Hero).where(db.Hero.name == "Deadpond")
+    hero = db.session.exec(statement).first()
+    print(hero)
     for t in listaTickets:
-        if t.id == id: return f'info ticket: {t}'
+        if t.id == id: 
+            return t
+    return 'No se encontró el ticket buscado...'
+
+@app.patch("/ticket/{id}")
+async def patch_ticket(id: int, ticket:Ticket):
+    global listaTickets
+    print(f'Buscando ticket id={id}...')
+    print('body: ', ticket)
+    for t,index in listaTickets:
+        if t.id == id: 
+            t = ticket
+            return f'Ticket actualizado: {t}'
     return 'No se encontró el ticket buscado...'
 
 # método de autenticación
