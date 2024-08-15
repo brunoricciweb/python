@@ -19,3 +19,4 @@ async def postProduct(productData: dict):
     productList.append(productData)
 
     return productData
+

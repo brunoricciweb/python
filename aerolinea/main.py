@@ -5,7 +5,7 @@ from validations import Ticket, Pasajero, Vuelo, Authentication
 from typing import Optional
 
 from . import models
-from .database import SessionLocal
+# from .database import SessionLocal
 
 # import db
 # engine = create_engine('postgresql+psycopg2://bruno:cozxfdUSeluaSObPUUGMcdXm2o3mOeZZ@dpg-cq3il5aju9rs739fj7qg-a.oregon-postgres.render.com/test_iyxa')
