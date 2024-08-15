@@ -29,7 +29,7 @@ def on_startup():
 
 
 @app.post("/product")
-def create_hero(product: Product):
+def create_product(product: Product):
     with Session(engine) as session:
         session.add(product)
         session.commit()
@@ -38,7 +38,7 @@ def create_hero(product: Product):
 
 
 @app.get("/products")
-def read_heroes():
+def read_products():
     with Session(engine) as session:
         heroes = session.exec(select(Product)).all()
         return heroes
