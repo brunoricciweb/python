@@ -23,5 +23,5 @@ def create_product(product: Product):
 @app.get("/products")
 def read_products():
     with Session(engine) as session:
-        heroes = session.exec(select(Product)).all()
-        return heroes
+        products = session.exec(select(Product)).all()
+        return products

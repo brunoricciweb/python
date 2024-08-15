@@ -1,8 +1,13 @@
 from fastapi import FastAPI
+from sqlmodel import Field, Session, SQLModel, create_engine, select, delete
+
+from db import Product, create_db_and_tables, engine
+
 
 app = FastAPI()
-
-productList = [{'name':'Teclado','price':15400.25,'img':'https://http2.mlstatic.com/D_NQ_NP_626103-MLA31936565669_082019-O.webp'}]
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
 
 @app.get("/")
 async def root():
@@ -10,13 +15,25 @@ async def root():
 
 @app.get("/products")
 async def getProducts():
-    return productList
+    with Session(engine) as session:
+        heroes = session.exec(select(Product)).all()
+        return heroes
 
 @app.post("/product")
-async def postProduct(productData: dict):
+async def postProduct(productData: Product):
 
     print(f'producto creado: ', productData)
-    productList.append(productData)
+    with Session(engine) as session:
+        session.add(productData)
+        session.commit()
+        session.refresh(productData)
+        return productData
+    
 
-    return productData
 
+@app.delete("/product/{id}")
+async def getProducts(id:int):
+    with Session(engine) as session:
+        product = session.exec(delete(Product).where(Product.id == id))
+        session.commit()
+        return product
