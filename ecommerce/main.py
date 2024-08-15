@@ -14,10 +14,17 @@ async def root():
     return {"message": "Hello World"}
 
 @app.get("/products")
-async def getProducts():
+async def getProducts(search:str=''):
     with Session(engine) as session:
-        heroes = session.exec(select(Product)).all()
-        return heroes
+        products = []
+        if(search != None):
+            products = session.exec(select(Product)).all()
+        if(search != ''):
+            products = session.exec(select(Product).where(Product.name.like(f'{search}')))        
+        return products
+
+
+
 
 @app.post("/product")
 async def postProduct(productData: Product):
