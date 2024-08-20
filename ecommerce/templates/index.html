@@ -2,13 +2,34 @@
 <html lang="en">
 <head>
     <title>My Webpage</title>
+    <style>
+        img{
+            height: 200px;
+        }
+        div{
+            margin:10px;
+            border:1px solid gray;
+            border-radius:10px;
+            padding: 10px;
+            min-width: 350px;
+            width: auto;
+        }
+        body{
+            display:inline;
+        }
+        p{
+            font-weight:bold
+        }
+
+    </style>
 </head>
 <body>
     {% for p in productsList %}
-    <div style="margin:10px;border:1px solid gray;border-radius:10px">
+    <div>
        <h2>{{p.name}}</h2>
+       <img src={{p.img_url}} alt="">
        <p>{{p.description}}</p>
-       <p>{{p.price}}</p>
+       <p>$ {{p.price}}</p>
     </div>  
     {% endfor %}
  

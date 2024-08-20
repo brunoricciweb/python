@@ -7,6 +7,7 @@ class Product(SQLModel, table=True):
     name: str = Field(index=True)
     description: str
     price: float | None = Field(default=None, index=True)
+    img_url: str = ''
 
 
 sqlite_file_name = "database.db"
