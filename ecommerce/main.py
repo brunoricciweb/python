@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from sqlmodel import Field, Session, SQLModel, create_engine, select, delete
 
-from db import Product, create_db_and_tables, engine
+from db import Product, create_db_and_tables, engine, readAllProducts
 
 
 app = FastAPI()
@@ -14,15 +14,8 @@ async def root():
     return {"message": "Hello World"}
 
 @app.get("/products")
-async def getProducts(search:str=''):
-    with Session(engine) as session:
-        products = []
-        if(search != None):
-            products = session.exec(select(Product)).all()
-        if(search != ''):
-            products = session.exec(select(Product).where(Product.name.like(f'{search}')))        
-        return products
-
+async def getProducts(search:str=''):   
+    return readAllProducts(search)
 
 
 

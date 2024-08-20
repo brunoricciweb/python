@@ -19,3 +19,16 @@ engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
+
+def readAllProducts(search:str):
+    with Session(engine) as session:
+        products = []
+        if(search != None):
+            products = session.exec(select(Product)).all()
+        if(search != ''):
+            products = session.exec(select(Product).where(Product.name.like('%'+search+'%'))).all()        
+        return products
+
+def createProduct(newProduct:Product):
+
+    pass
