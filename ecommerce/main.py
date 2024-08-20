@@ -1,13 +1,24 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request,Response
 from sqlmodel import Field, Session, SQLModel, create_engine, select, delete
 
-from db import Product, create_db_and_tables, engine, readAllProducts
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+from db import Product, create_db_and_tables, engine, readAllProducts, createProduct, deleteProduct
 
 
 app = FastAPI()
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
+
+################## Interfaz gráfica ######################
+templates = Jinja2Templates(directory="templates")
+@app.get("/seeproducts", response_class=HTMLResponse)
+async def read_item(request: Request,search:str=''):
+    return templates.TemplateResponse(
+        request=request, name="index.html", context={"productsList": readAllProducts(search)}
+    )
+##########################################################
 
 @app.get("/")
 async def root():
@@ -17,23 +28,13 @@ async def root():
 async def getProducts(search:str=''):   
     return readAllProducts(search)
 
-
-
 @app.post("/product")
 async def postProduct(productData: Product):
-
     print(f'producto creado: ', productData)
-    with Session(engine) as session:
-        session.add(productData)
-        session.commit()
-        session.refresh(productData)
-        return productData
+    return createProduct(productData)
     
-
 
 @app.delete("/product/{id}")
 async def getProducts(id:int):
-    with Session(engine) as session:
-        product = session.exec(delete(Product).where(Product.id == id))
-        session.commit()
-        return product
+    return deleteProduct(id)    
+    
