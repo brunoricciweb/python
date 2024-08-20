@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My Webpage</title>
+</head>
+<body>
+    {% for p in productsList %}
+    <div style="margin:10px;border:1px solid gray;border-radius:10px">
+       <h2>{{p.name}}</h2>
+       <p>{{p.description}}</p>
+       <p>{{p.price}}</p>
+    </div>  
+    {% endfor %}
+ 
+    <h1>My Webpage</h1>
+</body>
+</html>
