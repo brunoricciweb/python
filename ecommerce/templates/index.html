@@ -30,9 +30,25 @@
        <img src={{p.img_url}} alt="">
        <p>{{p.description}}</p>
        <p>$ {{p.price}}</p>
+       <button onclick="addToCart( {{p.id}} )">
+        Add to cart
+       </button>
     </div>  
     {% endfor %}
  
     <h1>My Webpage</h1>
 </body>
+<script>
+    function addToCart(productId){
+        console.log('add to cart -->', productId);
+        
+        fetch("/cart/" + productId, {  //por ejemplo->  /cart/1   (1 es el id)
+            method: "POST",
+        })
+        .then(function(res){ return res.json(); })
+        .then(function(data){
+            alert( JSON.stringify( data ) ) 
+        })
+    }
+</script>
 </html>
