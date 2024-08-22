@@ -10,6 +10,19 @@ class Product(SQLModel, table=True):
     img_url: str = ''
 
 
+class Users(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    first_name: str
+    last_name: str
+    email: str
+
+class Carts(SQLModel, table=True):
+    id: int =  Field(default=None, primary_key=True)
+    user_id: int = Field(default=None, foreign_key="users.id")
+    product_id: int = Field(default=None, foreign_key="product.id")
+    amount: int  # se envía en cada request de POST /cart
+
+
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 

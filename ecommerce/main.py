@@ -18,6 +18,7 @@ async def read_item(request: Request,search:str=''):
     return templates.TemplateResponse(
         request=request, name="index.html", context={"productsList": readAllProducts(search)}
     )
+    
 ##########################################################
 
 @app.get("/")
@@ -32,9 +33,13 @@ async def getProducts(search:str=''):
 async def postProduct(productData: Product):
     print(f'producto creado: ', productData)
     return createProduct(productData)
-    
 
 @app.delete("/product/{id}")
 async def getProducts(id:int):
     return deleteProduct(id)    
     
+############# Carrito #################
+@app.post("/cart/{id}")
+async def postProduct(id: int):
+    print(f'producto agregado al carrito --> id: ', id)
+    return f'Se agregó el producto id:{id}'
