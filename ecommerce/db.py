@@ -58,7 +58,7 @@ def deleteProduct(id:int):
 
 def getCart(userId):
     with Session(engine) as session:
-        cart = session.exec(  select(Carts,Product).where(Carts.product_id == Product.id)  )
+        cart = session.exec(  select(Carts,Product).where(Carts.product_id == Product.id).where(Carts.user_id == userId)  )
         print('****************************')
         cartProducts = []
         for c, p in cart:
@@ -67,8 +67,6 @@ def getCart(userId):
             cartProducts.append(auxProduct)
             print(' auxProduct ---> ', auxProduct)
         return cartProducts
-        ...
-    ...
 
 def setCartProduct(userId, productId, amount):
     # userId -> id del usuario
