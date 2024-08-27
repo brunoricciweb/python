@@ -55,3 +55,23 @@ def deleteProduct(id:int):
         product = session.exec(delete(Product).where(Product.id == id))
         session.commit()
         return product
+
+def getCart(userId):
+    with Session(engine) as session:
+        cart = session.exec(  select(Carts,Product).where(Carts.product_id == Product.id)  )
+        print('****************************')
+        cartProducts = []
+        for c, p in cart:
+            auxProduct = dict(p)
+            auxProduct['amount'] = c.amount
+            cartProducts.append(auxProduct)
+            print(' auxProduct ---> ', auxProduct)
+        return cartProducts
+        ...
+    ...
+
+def setCartProduct(userId, productId, amount):
+    # userId -> id del usuario
+    # productId -> id del producto
+    # amount -> cantidad de unidades de producto
+    ...

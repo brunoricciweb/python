@@ -3,7 +3,7 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select, delete
 
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from db import Product, create_db_and_tables, engine, readAllProducts, createProduct, deleteProduct
+from db import Product, create_db_and_tables, engine, readAllProducts, createProduct, deleteProduct,setCartProduct,getCart
 
 
 app = FastAPI()
@@ -40,6 +40,29 @@ async def getProducts(id:int):
     
 ############# Carrito #################
 @app.post("/cart/{id}")
-async def postProduct(id: int):
+async def addProductToCart(id: int):
     print(f'producto agregado al carrito --> id: ', id)
     return f'Se agregó el producto id:{id}'
+
+
+
+
+@app.get("/cart/{userId}")
+async def getCartByUserId(userId: int):
+    print(f'producto agregado al carrito del usuario "{userId}" --> id producto: ', userId)
+    carrito = getCart(userId)
+
+    # [
+    #     {
+    #         "id":1,
+    #         "name":"",
+    #         "description":"",
+    #         "price":"",
+    #         "img_url":"",
+            
+    #         "amount":0,
+    #     }
+    # ]
+    
+
+    return carrito
