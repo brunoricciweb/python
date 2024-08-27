@@ -42,8 +42,16 @@
     function addToCart(productId){
         console.log('add to cart -->', productId);
         
-        fetch("/cart/" + productId, {  //por ejemplo->  /cart/1   (1 es el id)
+        fetch("/cart", {  
             method: "POST",
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                productId: productId,
+                amount: 1,  
+                userId: 1   // hardcodeado
+                })
         })
         .then(function(res){ return res.json(); })
         .then(function(data){

@@ -72,4 +72,14 @@ def setCartProduct(userId, productId, amount):
     # userId -> id del usuario
     # productId -> id del producto
     # amount -> cantidad de unidades de producto
-    ...
+    nuevoRegistro = Carts(user_id=userId,product_id=productId,amount=amount)
+
+    ###BUG
+    # leer tabla Carts. Si el product_id existe, pisar/actualizar ese mismo registo.
+    # si el product_id NO existe, insertar directamente
+
+    with Session(engine) as session:
+        session.add(nuevoRegistro)
+        session.commit()
+        session.refresh(nuevoRegistro)
+        return nuevoRegistro

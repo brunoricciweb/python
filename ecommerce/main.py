@@ -39,18 +39,28 @@ async def getProducts(id:int):
     return deleteProduct(id)    
     
 ############# Carrito #################
-@app.post("/cart/{id}")
-async def addProductToCart(id: int):
-    print(f'producto agregado al carrito --> id: ', id)
-    return f'Se agregó el producto id:{id}'
+@app.post("/cart")
+async def addProductToCart(cartProduct: dict):
+    print(f'producto agregado al carrito --> atributos: ', cartProduct)
+
+    # leemos los valores del body -> cartProduct
+    respuesta = setCartProduct(cartProduct['userId'],cartProduct['productId'],cartProduct['amount'])
+
+    
+    """ ###BUG###
+        cuando agrego un mismo producto en el carrito, me crea un registro nuevo y debería 
+        pisar el valor "amount" del preexistente
+    """
+
+    return respuesta
 
 
 
 
 @app.get("/cart/{userId}")
 async def getCartByUserId(userId: int):
-    print(f'producto agregado al carrito del usuario "{userId}" --> id producto: ', userId)
     carrito = getCart(userId)
+    print(f'carrito del usuario "{userId}" --> ', carrito)
 
     # [
     #     {
