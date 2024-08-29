@@ -12,13 +12,24 @@ def on_startup():
     create_db_and_tables()
 
 ################## Interfaz gráfica ######################
+# ver productos
 templates = Jinja2Templates(directory="templates")
 @app.get("/seeproducts", response_class=HTMLResponse)
 async def read_item(request: Request,search:str=''):
     return templates.TemplateResponse(
         request=request, name="index.html", context={"productsList": readAllProducts(search)}
     )
+
+# ver carrito
+templates = Jinja2Templates(directory="templates")
+@app.get("/seecart/{userId}", response_class=HTMLResponse)
+async def read_item(request: Request,userId:int):
+    return templates.TemplateResponse(
+        request=request, name="cart.html", context={"cartProducts": getCart(userId)}
+    )
     
+
+
 ##########################################################
 
 @app.get("/")
@@ -46,9 +57,6 @@ async def addProductToCart(cartProduct: dict):
     # leemos los valores del body -> cartProduct
     respuesta = upsertCartProduct(cartProduct['userId'],cartProduct['productId'],cartProduct['amount'])
     return respuesta
-
-
-
 
 @app.get("/cart/{userId}")
 async def getCartByUserId(userId: int):

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito</title>
+
+    <style>
+        img {
+            height: 100px;
+        }
+
+        div>p {
+            margin: 10px
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Carrito</h2>
+
+    {% for p in cartProducts %}
+    <div style="display: flex;margin:15px;border:1px solid black;">
+        <img src={{p.img_url}} alt="foto">
+
+        <h2>{{p.name}}</h2>
+        <p>{{p.description}}</p>
+
+        <p>$ {{p.price}}</p>
+
+        <input type="number" name="qty" id="input-qty" min="0" value={{p.amount}} onchange="updateCart({{p.id}},this)">
+
+
+    </div>
+    {% endfor %}
+
+</body>
+<script>
+
+    function updateCart(productId, inputRef) {
+        // console.log(productId, inputRef);
+        
+        let amount = inputRef.value;
+        
+        fetch("/cart", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: 1,       // hardcodeado
+                productId: productId,
+                amount: amount,
+            })
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+            console.log('respuesta servidor:',JSON.stringify(data));
+
+        })
+
+
+    }
+
+</script>
+
+</html>
