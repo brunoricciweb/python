@@ -99,6 +99,7 @@
         .then(function (res) { return res.json(); })
         .then(function (data) {
             console.log('deleteCartProduct -> respuesta servidor:',JSON.stringify(data));
+            location.reload();
         })
     }
 </script>
