@@ -68,18 +68,23 @@ def getCart(userId):
             print(' auxProduct ---> ', auxProduct)
         return cartProducts
 
-def setCartProduct(userId, productId, amount):
+def upsertCartProduct(userId, productId, amount):
     # userId -> id del usuario
-    # productId -> id del producto
+    # productId -> id del producto a insertar en el carrito
     # amount -> cantidad de unidades de producto
-    nuevoRegistro = Carts(user_id=userId,product_id=productId,amount=amount)
-
-    ###BUG
-    # leer tabla Carts. Si el product_id existe, pisar/actualizar ese mismo registo.
-    # si el product_id NO existe, insertar directamente
 
     with Session(engine) as session:
-        session.add(nuevoRegistro)
+        cartProduct = session.exec( select(Carts)
+                                .where(Carts.user_id == userId)         # WHERE cart.user_id = userId
+                                .where(Carts.product_id == productId)   # AND cart.product_id = productId 
+                                ).first()
+    
+        if(cartProduct == None): # si el producto no se encuentra en el carrito...
+            cartProduct = Carts(user_id=userId,product_id=productId,amount=amount) # creo nuevo registro del carrito
+        else:   # si ya se encuentra en el carrito...
+            cartProduct.amount = amount   # sobrescribo el valor de cantidad (amount)
+
+        session.add(cartProduct)
         session.commit()
-        session.refresh(nuevoRegistro)
-        return nuevoRegistro
+        session.refresh(cartProduct)
+        return cartProduct

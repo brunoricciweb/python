@@ -3,7 +3,7 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select, delete
 
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from db import Product, create_db_and_tables, engine, readAllProducts, createProduct, deleteProduct,setCartProduct,getCart
+from db import Product, create_db_and_tables, engine, readAllProducts, createProduct, deleteProduct,upsertCartProduct,getCart
 
 
 app = FastAPI()
@@ -44,14 +44,7 @@ async def addProductToCart(cartProduct: dict):
     print(f'producto agregado al carrito --> atributos: ', cartProduct)
 
     # leemos los valores del body -> cartProduct
-    respuesta = setCartProduct(cartProduct['userId'],cartProduct['productId'],cartProduct['amount'])
-
-    
-    """ ###BUG###
-        cuando agrego un mismo producto en el carrito, me crea un registro nuevo y debería 
-        pisar el valor "amount" del preexistente
-    """
-
+    respuesta = upsertCartProduct(cartProduct['userId'],cartProduct['productId'],cartProduct['amount'])
     return respuesta
 
 
