@@ -14,6 +14,20 @@
         div>p {
             margin: 10px
         }
+        h2{
+            margin:10px;
+        }
+
+        .main-container{
+            display: flex;
+            /* flex-wrap: wrap; */
+            margin:15px;
+            padding: 10px;
+            border:1px solid black;
+            border-radius: 5px;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -21,16 +35,22 @@
     <h2>Carrito</h2>
 
     {% for p in cartProducts %}
-    <div style="display: flex;margin:15px;border:1px solid black;">
+    <div class="main-container">
         <img src={{p.img_url}} alt="foto">
 
-        <h2>{{p.name}}</h2>
-        <p>{{p.description}}</p>
+        <div>
+            <h2>{{p.name}}</h2>
+            <p>{{p.description}}</p>
+        </div>
 
         <p>$ {{p.price}}</p>
 
-        <input type="number" name="qty" id="input-qty" min="0" value={{p.amount}} onchange="updateCart({{p.id}},this)">
+        <input type="number" name="qty" id="input-qty" min="0" value={{p.amount}} onchange="updateCart({{p.id}},this,{{p.price}})">
 
+
+        <p id="subtotal_{{p.id}}"> $ {{p.amount * p.price}} </p>
+        
+        <button type="button" onclick="deleteCartProduct({{p.id}})">Borrar</button>
 
     </div>
     {% endfor %}
@@ -38,10 +58,10 @@
 </body>
 <script>
 
-    function updateCart(productId, inputRef) {
+    function updateCart(productId, inputRef, productPrice) {
         // console.log(productId, inputRef);
         
-        let amount = inputRef.value;
+        let amount = parseInt(inputRef.value);
         
         fetch("/cart", {
             method: "POST",
@@ -58,11 +78,29 @@
         .then(function (data) {
             console.log('respuesta servidor:',JSON.stringify(data));
 
+            let elemSubtotal = document.getElementById(`subtotal_${productId}`);
+            elemSubtotal.innerHTML = `$ ${amount * productPrice}` ;  // $123.45  -> damos formato al precio
         })
 
 
     }
 
+    function deleteCartProduct(productId){        
+        fetch("/cart", {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: 1,       // hardcodeado
+                productId: productId,
+            })
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+            console.log('deleteCartProduct -> respuesta servidor:',JSON.stringify(data));
+        })
+    }
 </script>
 
 </html>

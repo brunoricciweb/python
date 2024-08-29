@@ -88,3 +88,18 @@ def upsertCartProduct(userId, productId, amount):
         session.commit()
         session.refresh(cartProduct)
         return cartProduct
+
+
+def deletCartProduct(userId, productId):
+    with Session(engine) as session:
+        prodToDelete = session.exec( select(Carts)
+                                .where(Carts.user_id == userId)         # WHERE cart.user_id = userId
+                                .where(Carts.product_id == productId)   # AND cart.product_id = productId 
+                                ).first()
+        
+        if(prodToDelete == None): return {}
+
+        session.delete(prodToDelete)
+        session.commit()
+        return {'status':'deleted',
+                'object': prodToDelete}

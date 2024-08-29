@@ -3,7 +3,7 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select, delete
 
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from db import Product, create_db_and_tables, engine, readAllProducts, createProduct, deleteProduct,upsertCartProduct,getCart
+from db import Product, create_db_and_tables, engine, readAllProducts, createProduct, deleteProduct,upsertCartProduct,getCart,deletCartProduct
 
 
 app = FastAPI()
@@ -52,17 +52,20 @@ async def getProducts(id:int):
 ############# Carrito #################
 @app.post("/cart")
 async def addProductToCart(cartProduct: dict):
+    # leemos los valores del body -> cartProduct
     print(f'producto agregado al carrito --> atributos: ', cartProduct)
 
-    # leemos los valores del body -> cartProduct
-    respuesta = upsertCartProduct(cartProduct['userId'],cartProduct['productId'],cartProduct['amount'])
+    #agregamos lógica para que si amount es 0, no invoque upsertCartProduct sino a deleteCartProduct
+    if(cartProduct['amount'] != 0):
+        respuesta = upsertCartProduct(cartProduct['userId'],cartProduct['productId'],cartProduct['amount'])
+    else:
+        respuesta = deletCartProduct(cartProduct['userId'],cartProduct['productId'])
     return respuesta
 
 @app.get("/cart/{userId}")
 async def getCartByUserId(userId: int):
     carrito = getCart(userId)
     print(f'carrito del usuario "{userId}" --> ', carrito)
-
     # [
     #     {
     #         "id":1,
@@ -70,10 +73,16 @@ async def getCartByUserId(userId: int):
     #         "description":"",
     #         "price":"",
     #         "img_url":"",
-            
     #         "amount":0,
     #     }
     # ]
-    
-
     return carrito
+
+
+@app.delete("/cart")
+async def deleteProductFromCart(cartProduct: dict):
+    print(f'DELETE /cart  - producto eliminado del carrito --> atributos: ', cartProduct)
+
+    # leemos los valores del body -> cartProduct
+    respuesta = deletCartProduct(cartProduct['userId'],cartProduct['productId'])
+    return respuesta
