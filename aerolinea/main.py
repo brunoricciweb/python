@@ -118,7 +118,7 @@ async def authenticate(body:Authentication, res:Response):
 
 
 
-##################################################################
+################# Cookies #################################################
 
 @app.get("/set_cookie")
 async def post_ticket(res:Response):    

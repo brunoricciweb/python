@@ -15,6 +15,7 @@ class Users(SQLModel, table=True):
     first_name: str
     last_name: str
     email: str
+    password: str
 
 class Carts(SQLModel, table=True):
     id: int =  Field(default=None, primary_key=True)
@@ -89,7 +90,6 @@ def upsertCartProduct(userId, productId, amount):
         session.refresh(cartProduct)
         return cartProduct
 
-
 def deletCartProduct(userId, productId):
     with Session(engine) as session:
         prodToDelete = session.exec( select(Carts)
@@ -103,3 +103,17 @@ def deletCartProduct(userId, productId):
         session.commit()
         return {'status':'deleted',
                 'object': prodToDelete}
+
+
+def authUser(attemptEmail, attemptPassword):
+    # hace query, si encuentra una fila, devuelve userId. Si no, devuelve False
+    """ select id from users
+        where email = 'bruno@test.com'
+        AND password = 'bruno234'        
+    """
+    with Session(engine) as session:
+        userId = session.exec(  select(Users.id).where(Users.email == attemptEmail).where(Users.password == attemptPassword)  ).first()
+        print('authUser userId',  userId)
+        return userId
+    
+    ...
