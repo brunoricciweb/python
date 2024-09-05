@@ -25,10 +25,10 @@ class Carts(SQLModel, table=True):
 
 
 sqlite_file_name = "database.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
+sqlite_url = f"postgresql://ecom:n9O8ZyfaNxsgNt7CbrYvoUxHlGLtQqnU@dpg-crd278jv2p9s73dekl60-a.oregon-postgres.render.com/bruno_pgsql_ecom"
 
-connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
+# connect_args = {"check_same_thread": False}
+engine = create_engine(sqlite_url, echo=True)
 
 
 def create_db_and_tables():
