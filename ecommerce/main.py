@@ -128,7 +128,7 @@ async def deleteProductFromCart(cartProduct: dict, reqData:Request, res:Response
 
 ########## Autenticación ###########
 @app.post("/login")
-async def addProductToCart(email: Annotated[str, Form()], password: Annotated[str, Form()], res:Response):
+async def authlogin(email: Annotated[str, Form()], password: Annotated[str, Form()], res:Response):
 
     authenticatedUserId = authUser(email,password) 
 
@@ -139,6 +139,12 @@ async def addProductToCart(email: Annotated[str, Form()], password: Annotated[st
     
     res.status_code = 400
     return 'Credenciales inválidas. Reintente nuevamente.'
+
+@app.get("/logout")
+async def authlogout(res:Response):
+    res.status_code = 200
+    res.delete_cookie('cookieUserId')
+    return 'Logout exitoso.'
 
 #####################
 
