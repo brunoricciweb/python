@@ -1,7 +1,7 @@
 */myvenv
 *_pycache__
 
-
+*.env
 
 ecommerce/database.db
 test_db/database.db
